@@ -67,6 +67,11 @@ def _data():
         st.warning("Memakai SQLite. Jika di-hosting di layanan yang filesystem-nya sementara "
                    "(mis. Streamlit Community Cloud), data bisa hilang saat aplikasi restart. "
                    "Gunakan PostgreSQL lewat DATABASE_URL (lihat panduan hosting).")
+        if config.SECRETS_PROBLEM:
+            st.error(config.SECRETS_PROBLEM)
+        keys = ", ".join(config.SECRET_KEYS) or "(tidak ada)"
+        st.info(f"Diagnosa: kunci yang terbaca di Secrets: {keys}. "
+                "Harus ada kunci bernama DATABASE_URL (huruf besar semua, di luar [section]).")
     else:
         st.success("Memakai database server (PostgreSQL). Cadangan dilakukan lewat layanan database Anda.")
 

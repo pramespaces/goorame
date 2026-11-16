@@ -5,6 +5,7 @@ Jalankan:  python -m streamlit run app.py
 import streamlit as st
 from PIL import Image
 
+from app.core import config
 from app.core.database import init_db, session_scope
 from app.services import operations as ops
 from views import (akuntansi, buku_besar, dashboard, kas, kolam, laporan, pengaturan, pengeluaran,
@@ -34,9 +35,16 @@ def _bootstrap():
     return True
 
 
+def config_banner():
+    if config.SECRETS_PROBLEM:
+        st.error(f"Konfigurasi database bermasalah: {config.SECRETS_PROBLEM} "
+                 "Aplikasi sementara memakai SQLite, sehingga data bisa hilang saat restart.", icon="🚨")
+
+
 def login_screen():
     _, mid, _ = st.columns([1, 1.2, 1])
     with mid:
+        config_banner()
         st.image(str(ASSETS / "logo.png"), width=260)
         st.markdown("<h1 class='login-title'>Goorame</h1>"
                     "<p class='login-sub'>Sistem informasi akuntansi &amp; budidaya ikan gurame</p>",
@@ -74,6 +82,7 @@ def main():
             st.session_state.clear()
             st.rerun()
 
+    config_banner()
     if user.get("default_pw"):
         st.warning("Anda masih memakai kata sandi bawaan. Ganti di menu Pengaturan → Akun saya.", icon="🔐")
     show_flash()

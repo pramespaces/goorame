@@ -9,11 +9,21 @@ DB_FILE = ROOT_DIR / "goorame.db"
 APP_NAME = "Goorame Mini-ERP"
 
 
+SECRETS_PROBLEM = None   # pesan bila file Secrets rusak (tanpa nilai rahasia)
+SECRET_KEYS = []         # hanya NAMA kunci yang terbaca, untuk diagnosa
+
+
 def _from_secrets(key: str):
+    global SECRETS_PROBLEM
     try:
         import streamlit as st
-        return st.secrets.get(key)
-    except Exception:
+        value = st.secrets.get(key)
+        SECRET_KEYS[:] = list(st.secrets.keys())
+        return value
+    except Exception as exc:
+        if "pars" in str(exc).lower():
+            SECRETS_PROBLEM = ("Format Secrets tidak valid (biasanya nilai tidak diberi tanda kutip dua, "
+                               "contoh benar: DATABASE_URL = \"postgresql://...\").")
         return None
 
 
