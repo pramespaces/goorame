@@ -75,7 +75,7 @@ def render(user):
                 sale = db.query(Sale).filter(Sale.id == sid).first()
                 html = build_nota_html(sale, logo_b64()) if sale else ""
                 name = sale.invoice_no if sale else "nota"
-            st.download_button("Unduh nota (HTML, siap cetak)", html, f"nota_{name}.html", "text/html")
+            st.download_button("Unduh nota", html, f"nota_{name}.html", "text/html")
             st.caption("Buka file hasil unduhan di browser, lalu klik Cetak / Simpan PDF.")
             with st.expander("Pratinjau nota", expanded=True):
                 # semua isian pengguna di-escape di build_nota_html, aman untuk iframe
